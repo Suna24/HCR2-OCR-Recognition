@@ -1,0 +1,6 @@
+.idea/
+__pycache__/
+credentials.json
+*cropped.png
+*ready_for_tesseract.png
+original_leaderboards/
