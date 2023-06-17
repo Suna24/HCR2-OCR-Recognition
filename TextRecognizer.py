@@ -57,15 +57,12 @@ class TextRecognizer:
 
     def apply_correction(self, lines):
         for line in lines:
-            if not self.string_contains_only_digits_and_spaces(line[0]):
-                if line[0].startswith("EMPI") and line[0].endswith("3"):
-                    line[0] = line[0].replace("3", "³")
-                if line[0].startswith("EMPI") and "=" in line[0]:
-                    line[0] = line[0].replace("=", "Ξ")
-                if line[0].startswith("SUPRE") and line[0].endswith("?"):
-                    line[0] = line[0].replace("?", "²")
-                if line[0].startswith("MADE !N FORCE") and line[0].endswith("?"):
-                    line[0] = line[0].replace("?", "²")
+            # if the line starts with numbers and ends with S, replace it by 5
+            if re.match("^[0-9]+S$", line[0]) and line[0].endswith("S"):
+                line[0] = line[0].replace("S", "5")
+
+            if re.match("^[0-9]+S$", line[1]) and line[1].endswith("S"):
+                line[1] = line[1].replace("S", "5")
 
     @staticmethod
     def string_contains_only_digits_and_spaces(string):

@@ -38,5 +38,4 @@ for path in leaderboard_paths:
                                         team_match_and_trust_rate=team_analyzer.find_most_probable_team_matches_fuzz_algorithm(obj["team"])[0],
                                         score=obj["score"])
 
-google_sheet_manager.update_worksheet_with_csv("assets/files/exported_csv.csv")
-
+google_sheet_manager.update_worksheet_batch(google_sheet_manager_algo_v3.get_round())
