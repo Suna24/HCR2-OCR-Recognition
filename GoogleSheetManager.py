@@ -58,27 +58,33 @@ class GoogleSheetManager:
         if self.worksheet.title != "Algo V3":
             raise WrongWorksheetException
         else:
-            return self.worksheet.acell('H1').value
+            # Here return the round for which you want to enter the results (it can be a command argument maybe)
+            return "4"
+            # In the case of the Algo V3 worksheet, the round is in the cell H1
+            # return self.worksheet.acell('H1').value
 
     def update_csv(self, filename, current_round, team_match_and_trust_rate, score):
         """This function update the csv file with the new data passed in parameters"""
 
         # This has to be modified every season
-        team_name_which_cause_issues = ["SÜPREME", "SÜPREME²", "EMPIRΞ", "EMPIRΞ²", "EMPIRΞ³", "Project GER",
-                                        "Project GER²", "Project GER³", "UNIVERSE™", "UNIVERSE™²", "Swedish Power",
-                                        "Swedish Power⁴", "UNIÓN~H", "UNIÓN~H²", "MADE !N FORCE", "MADE !N FORCE²",
-                                        "French Spirit¹", "French Spirit²", "French Spirit³", "Discord", "Discord²",
-                                        "B R A Z I L ¹"]
+        team_name_which_cause_issues = ["E M P I R Ξ", "E M P I R Ξ²", "E M P I R Ξ³",
+                                        "RPS",
+                                        "Project GER", "Project GER²", "Project GER³",
+                                        "Low||Lands", "Low Lands 2",
+                                        "PERSIA", "P E R S I A™",
+                                        "Sharks", "Sharks²",
+                                        "Ñ&FRIENDS", "Ñ&FRIENDS²",
+                                        "MADE !N FORCE", "MADE !N FORCE3"]
 
-        # Check if the team is not in the list of teams which cause issues and if the trust rate is above 20%
+        # Check if the team is not in the list of teams which cause issues and if the trust rate is above 40%
         if team_match_and_trust_rate[0] not in team_name_which_cause_issues \
-                and team_match_and_trust_rate[1] >= 20:
+                and team_match_and_trust_rate[1] >= 40:
 
             # Get content
             rows = self.get_csv_content(filename)
 
             # Get team name with emote thanks to team association json file
-            with open("assets/files/Season_26/Season-26_teams_association.json", 'r', encoding='utf-8') as file:
+            with open("assets/files/Season_27/Season-27_teams_association.json", 'r', encoding='utf-8') as file:
                 json_content = json.load(file)
             team_name_with_emote = json_content[team_match_and_trust_rate[0]]
 
@@ -119,6 +125,7 @@ class GoogleSheetManager:
 
     @staticmethod
     def get_csv_content(filename):
+        """This function get the content of a csv file"""
         rows = []
         with open(filename, 'r', encoding='utf-8') as file:
             reader = csv.reader(file)
@@ -128,6 +135,7 @@ class GoogleSheetManager:
 
     @staticmethod
     def get_column_index(rows, current_round):
+        """This function get the column index based on the round"""
         column_index = None
         if rows and len(rows[0]) > 0:
             column_index = rows[0].index(current_round)
@@ -136,45 +144,10 @@ class GoogleSheetManager:
 
     @staticmethod
     def get_row_index(rows, team_name_with_emote):
+        """This function get the row index based on the team name"""
         row_index = None
         for i, row in enumerate(rows):
             if row[2] == team_name_with_emote:
                 row_index = i
                 break
         return row_index
-
-    def is_score_coherent(self, team_name, score, current_round):
-        """ This method checks is the score assigned to the team is coherent with the score of the previous round """
-        # Get content
-        rows = GoogleSheetManager.get_csv_content("assets/files/exported_csv.csv")
-
-        # Get column index based on the round
-        column_index = self.get_column_index(rows, current_round)
-
-        # Get row index based on the team name
-        row_index = self.get_row_index(rows, team_name)
-
-        if row_index is not None and column_index is not None:
-            if column_index - 1 >= 0:
-                if int(rows[row_index][column_index - 1]) + 4353 >= int(score) >= int(
-                        rows[row_index][column_index - 1]):
-                    return True
-                else:
-                    return False
-            else:
-                return False
-
-    def get_opponent(self, team_name, current_round):
-        # Get content
-        rows = self.get_csv_content("assets/files/exported_csv.csv")
-
-        # Get column index based on the round
-        column_index = self.get_column_index(rows, current_round)
-
-        # Get row index based on the team name
-        row_index = self.get_row_index(rows, team_name)
-
-        if row_index is not None and column_index is not None:
-            return rows[row_index][column_index + 1]
-        else:
-            return None

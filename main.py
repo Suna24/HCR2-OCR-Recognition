@@ -2,36 +2,28 @@ from ImageProcessor import ImageProcessor
 from TextRecognizer import TextRecognizer
 from TeamAnalyzer import TeamAnalyzer
 from GoogleSheetManager import GoogleSheetManager
+import os
 
 # This is for getting the current round only
 google_sheet_manager_algo_v3 = GoogleSheetManager('Algo V3')
 
 # Specify here all images paths to process
-leaderboard_paths = [
-    "assets/images/leaderboard_1.png",
-    "assets/images/leaderboard_2.png",
-    "assets/images/leaderboard_3.png",
-    "assets/images/leaderboard_4.png",
-    "assets/images/leaderboard_5.png",
-    "assets/images/leaderboard_6.png",
-    "assets/images/leaderboard_7.png",
-    "assets/images/leaderboard_8.png",
-    "assets/images/leaderboard_9.png",
-    "assets/images/leaderboard_10.png",
-    "assets/images/leaderboard_11.png",
-]
+leaderboard_paths = os.listdir("assets/images/")
+# Filter out file paths that end with "cropped" or "ready_for_tesseract"
+leaderboard_paths = [path for path in leaderboard_paths if not path.endswith("cropped.png") and not path.endswith("ready_for_tesseract.png")]
 
 # Replace the file here according to the season
-team_analyzer = TeamAnalyzer("assets/files/Season_26/Season-26_teams_without_emotes.txt")
+team_analyzer = TeamAnalyzer("assets/files/Season_27/Season-27_teams_without_emotes.txt")
 
-google_sheet_manager_top_100 = GoogleSheetManager('Top 100 api suna')
+# Modify the name of the sheet here (if you want to do test -> Top 100 api suna)
+google_sheet_manager_top_100 = GoogleSheetManager('Top 100')
 
 # We get the csv file from the sheet
 google_sheet_manager_top_100.export_worksheet_to_csv("assets/files/exported_top_100_csv.csv")
 
 for path in leaderboard_paths:
     # Process the image to be ready for tesseract
-    image_processor = ImageProcessor(path)
+    image_processor = ImageProcessor("assets/images/" + path)
     image_processor.process_image()
 
     # Tesseract object

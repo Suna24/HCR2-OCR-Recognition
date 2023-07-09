@@ -35,7 +35,8 @@ class ImageProcessor:
 
     def crop_image(self):
         """This method crops the image to get only the leaderboard"""
-        self.image = self.image.crop(((self.image.width / 2.6), 370, (self.image.width / 1.2), self.image.height))
+        # Unfortunately, this is absolute crop and this does not handle various screen sizes
+        self.image = self.image.crop(((self.image.width / 2.63), 370, (self.image.width / 1.2), self.image.height))
 
     @staticmethod
     def is_pixel_considered_white(r, g, b):
